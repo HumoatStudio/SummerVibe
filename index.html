@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f2f6ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .player-container {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .player-header {
+            background: linear-gradient(to top, #d8e3ff, #a8bfff);
+            padding: 20px;
+        }
+
+        .player-header img {
+            width: 150px; /* уменьшили размер изображения */
+            height: auto;
+            border-radius: 15px;
+        }
+
+        .track-info {
+            padding: 20px;
+        }
+
+        .track-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .track-description {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .player-controls {
+            background: #eaf0ff;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .player-controls button {
+            background: #a8bfff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .player-controls button:hover {
+            background: #869ed6;
+        }
+
+        .progress-bar {
+            width: 80%;
+            height: 5px;
+            background: #ddd;
+            margin: 10px auto;
+            position: relative;
+        }
+
+        .progress {
+            height: 5px;
+            background: #a8bfff;
+            width: 0%;
+        }
+
+        .time {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .link {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .link a {
+            color: #0073e6;
+            text-decoration: none;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        .download-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .download-button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="player-container">
+    <div class="player-header">
+        <img src="icon.jpeg" alt="Track cover">
+    </div>
+    <div class="track-info">
+        <div class="track-title">Летний Вайб</div>
+        <div class="track-description">Трек без АП, специально для Ecrous Engine</div>
+    </div>
+    
+    <!-- Добавляем тег audio для воспроизведения музыки -->
+    <audio id="audio" src="music.mp3"></audio>
+
+    <div class="player-controls">
+        <button id="rewind">⏪</button>
+        <button id="play">▶️</button>
+        <button id="forward">⏩</button>
+    </div>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    <div class="time">
+        <span id="currentTime">0:00</span> / <span id="duration">4:00</span>
+    </div>
+
+    <!-- Ссылка на сайт Ecrous Engine -->
+    <div class="link">
+        <a href="https://ecrousengine.ru" target="_blank">Посетите сайт Ecrous Engine</a>
+    </div>
+
+    <!-- Кнопка для скачивания трека -->
+    <button class="download-button">
+        Скачать трек
+    </button>
+</div>
+
+<script>
+    // JavaScript for Play and Progress
+    const playButton = document.getElementById('play');
+    const progress = document.getElementById('progress');
+    const currentTime = document.getElementById('currentTime');
+    const audio = document.getElementById('audio');
+
+    let playing = false;
+    let duration = 135; // Duration in seconds (2:15)
+    let time = 0;
+
+    playButton.addEventListener('click', () => {
+        playing = !playing;
+        playButton.textContent = playing ? '⏸️' : '▶️';
+
+        if (playing) {
+            audio.play(); // Воспроизводим музыку
+            interval = setInterval(() => {
+                if (time < duration) {
+                    time++;
+                    progress.style.width = (time / duration) * 100 + '%';
+                    currentTime.textContent = formatTime(time);
+                } else {
+                    clearInterval(interval);
+                    playing = false;
+                    playButton.textContent = '▶️';
+                    audio.pause(); // Останавливаем музыку после окончания
+                }
+            }, 1000);
+        } else {
+            clearInterval(interval);
+            audio.pause(); // Останавливаем музыку при паузе
+        }
+    });
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // Обработчик для кнопки скачивания трека
+    document.querySelector('.download-button').addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = 'music.mp3'; // Путь к музыкальному файлу
+        link.download = 'Летний_Закат.mp3'; // Имя скачиваемого файла
+        link.click(); // Имитация клика по ссылке для скачивания
+    });
+</script>
+
+</body>
+</html>
